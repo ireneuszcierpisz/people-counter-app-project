@@ -3,7 +3,7 @@ import cv2
 
 
 """ Process output for models detecting bounding boxes. """
-def process_output_bb(output, count, tracker, frame_copy, height, width, args, colors, image_flag, ft, persons, PDT, frame_stamp):
+def process_output_bb(output, count, tracker, frame_copy, height, width, args, colors, image_flag, ft, persons, PDT):
     
     blue = colors["BLUE"]
     yellow = colors["YELLOW"]

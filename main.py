@@ -38,6 +38,7 @@ import ffmpeg
 
 logging.getLogger().setLevel(logging.INFO)
 
+
 # MQTT server environment variables
 HOSTNAME = socket.gethostname()
 IPADDRESS = socket.gethostbyname(HOSTNAME)
@@ -57,6 +58,7 @@ CPU_EXTENSION = "/opt/intel/openvino/deployment_tools/inference_engine/lib/intel
 colors = {"BLUE":(255,0,0), "GREEN":(0,255,0), "RED":(0,0,255), "YELLOW":(0,255,255), "PURPLE":(240, 0, 159)}
 
 def infer_on_stream(args, start_time, client):
+    app_mode = args.mode
     
     device = args.d
     color = colors[args.c] 
@@ -90,7 +92,7 @@ def infer_on_stream(args, start_time, client):
         
     
     # Get and open video capture
-    cap, video_writer, image_flag, height, width, frame_stamp = capture_stream(args)
+    cap, video_writer, image_flag, height, width = capture_stream(args)
     logging.info('Video captured.')
     
     # creates tracker dict to collect objects location points
@@ -99,6 +101,8 @@ def infer_on_stream(args, start_time, client):
     persons = [] #list to collect persons/bboxes data
     PDT = {} # dict to collect persons duration times
 
+    if app_mode != "mqtt":
+        logging.info("            ! It's NOT  MQTT  MODE! ")
     """ Process frames until the video ends, or process is exited """
     logging.info('Processing frames...')
     inferB_time = 0
@@ -144,7 +148,7 @@ def infer_on_stream(args, start_time, client):
 
                 # Process the net_bb output
                 start_process_output = time.clock() 
-                frame_copy, count, tracker, persons, PDT = process_output_bb(output_bb, count, tracker, frame_copy, height, width, args, colors, image_flag, ft, persons, PDT, frame_stamp)    
+                frame_copy, count, tracker, persons, PDT = process_output_bb(output_bb, count, tracker, frame_copy, height, width, args, colors, image_flag, ft, persons, PDT)    
                 processing_outputB_time += time.clock() - start_process_output
                 if image_flag: print("Time of Processing output on 1 frame: {:.4}".format(processing_outputB_time))
                               
@@ -165,22 +169,25 @@ def infer_on_stream(args, start_time, client):
                 processing_outputS_time += time.clock() - start_process_output
                 if image_flag: print("Time of Processing output on 1 frame: {:.4}".format(processing_outputS_time))
 
-                # gets current_count, total_count and duration and send to the MQTT server
-                # Topic "person": keys of "count" and "total" , Topic "person/duration": key of "duration"    
-                client.publish("person", json.dumps({'count': current_count, 'total': total_count}))
-                client.publish("person/duration", json.dumps({'duration': duration}))
-
-        # Sends frame to the ffmpeg server
-        sys.stdout.buffer.write(frame_copy)
-        sys.stdout.flush()
-        
+                if app_mode == "mqtt":
+                    # gets current_count, total_count and duration and send to the MQTT server
+                    # Topic "person": keys of "count" and "total" , Topic "person/duration": key of "duration"    
+                    client.publish("person", json.dumps({'count': current_count, 'total': total_count}))
+                    client.publish("person/duration", json.dumps({'duration': duration}))
+                
+        if app_mode == "mqtt":
+            # Sends frame to the ffmpeg server
+            sys.stdout.buffer.write(frame_copy)
+            sys.stdout.flush()
+                
         # Writes an output image if single_image_mode
         # Write out the frame_copy
         if image_flag:
             cv2.imwrite("output_image.jpg", frame_copy)
             logging.info("        ! Got output image!")
-#         else:
-#             video_writer.write(frame_copy)
+            logging.info('Size of frame sent to the server: {}'.format(frame_copy.shape))                       
+        elif app_mode != "mqtt":
+            video_writer.write(frame_copy)
 
                 
         # Break if escape key pressed
@@ -198,8 +205,9 @@ def infer_on_stream(args, start_time, client):
     # Destroy all of the opened HighGUI windows
     cv2.destroyAllWindows()
     
-    # Disconnect from MQTT
-    client.disconnect()    
+    if app_mode == 'mqtt':
+        # Disconnect from MQTT
+        client.disconnect()    
     
     run_time = time.clock() - start_time    
     print("run_time: {:.2f}sec".format(run_time))
@@ -212,9 +220,14 @@ def main():
 
     # Grab command line args
     args = get_args()
-
-    # Connect to the MQTT server
-    client = connect_mqtt()
+    
+    app_mode = args.mode
+    if app_mode == "mqtt":
+        logging.info('MODE=mqtt')    
+        # Connect to the MQTT server
+        client = connect_mqtt()
+    else:
+        client = 'client'
     
     # Perform inference on the input stream
     infer_on_stream(args, start_time, client)

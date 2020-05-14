@@ -21,6 +21,8 @@ def get_args():
     c_desc = "The color of the bounding boxes to draw; RED, GREEN or BLUE"
     ct_desc = "The confidence threshold to use with the bounding boxes"
     mf_desc = "Model flag 'B' for Bounding Boxes (output shape [1x1xNx7]) , 'P' for Pose Estimation (output blob shape  [1x19x32x57]), 'BP' for cascade two models"
+    mode_desc = "App mode 'write' for video_writer.write() or 'mqtt' for sending data to MQTT server"
+    
     
     # Required and optional groups
     parser._action_groups.pop()
@@ -35,6 +37,7 @@ def get_args():
     optional.add_argument("-d", help=d_desc, default='CPU')
     optional.add_argument("-c", help=c_desc, default='RED')
     optional.add_argument("-ct", help=ct_desc, type=float, default=0.6)
+    optional.add_argument("-mode", help=mode_desc, default='write')
     args = parser.parse_args()
 
     return args
