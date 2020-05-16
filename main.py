@@ -27,7 +27,7 @@ from get_args import get_args
 from capture_stream import capture_stream
 from check_layers import check_layers
 from preprocess_input import preprocess_frame
-from process_output import process_output_bb, process_output_semantic, process_pose
+from process_output import process_output_bb, process_pose
 import logging
 import time
 import os
@@ -38,6 +38,7 @@ import ffmpeg
 
 logging.getLogger().setLevel(logging.INFO)
 
+CPU_EXTENSION = "/opt/intel/openvino/deployment_tools/inference_engine/lib/intel64/libcpu_extension_sse4.so"
 
 # MQTT server environment variables
 HOSTNAME = socket.gethostname()
@@ -53,15 +54,11 @@ def connect_mqtt():
     
     return client
 
-CPU_EXTENSION = "/opt/intel/openvino/deployment_tools/inference_engine/lib/intel64/libcpu_extension_sse4.so"
-
-colors = {"BLUE":(255,0,0), "GREEN":(0,255,0), "RED":(0,0,255), "YELLOW":(0,255,255), "PURPLE":(240, 0, 159)}
 
 def infer_on_stream(args, start_time, client):
     app_mode = args.mode
     
-    device = args.d
-    color = colors[args.c] 
+    device = args.d 
     
     #choose model for inference
     model_flag = args.mf
@@ -102,7 +99,7 @@ def infer_on_stream(args, start_time, client):
     PDT = {} # dict to collect persons duration times
 
     if app_mode != "mqtt":
-        logging.info("            ! It's NOT  MQTT  MODE! ")
+        logging.info("  ! It's NOT  MQTT  MODE! >> for MQTT please use command line argument: -mode 'mqtt'")
     """ Process frames until the video ends, or process is exited """
     logging.info('Processing frames...')
     inferB_time = 0
@@ -148,11 +145,11 @@ def infer_on_stream(args, start_time, client):
 
                 # Process the net_bb output
                 start_process_output = time.clock() 
-                frame_copy, count, tracker, persons, PDT = process_output_bb(output_bb, count, tracker, frame_copy, height, width, args, colors, image_flag, ft, persons, PDT)    
+                frame_copy, count, tracker, persons, PDT = process_output_bb(output_bb, count, tracker, frame_copy, height, width, args, image_flag, ft, persons, PDT)    
                 processing_outputB_time += time.clock() - start_process_output
                 if image_flag: print("Time of Processing output on 1 frame: {:.4}".format(processing_outputB_time))
                               
-#SEMANTIC/POSE
+#POSE ESTIMATION
         if model_flag == "P" or model_flag == "BP":
             startInfer_time = time.clock()
             net_s.async_inference(frame4infer_s, request_id)    
@@ -164,7 +161,6 @@ def infer_on_stream(args, start_time, client):
 
                 # Process the net_s output
                 start_process_output = time.clock()
-    #             frame_copy = process_output_semantic(output_s, width, height, frame_copy)
                 frame_copy, count, tracker, persons, PDT, duration, current_count, total_count = process_pose(output_s, count, tracker, frame_copy, height, width, ft, persons, PDT)
                 processing_outputS_time += time.clock() - start_process_output
                 if image_flag: print("Time of Processing output on 1 frame: {:.4}".format(processing_outputS_time))
@@ -209,9 +205,11 @@ def infer_on_stream(args, start_time, client):
         # Disconnect from MQTT
         client.disconnect()    
     
+    if model_flag == "BP":
+        logging.info("Case of Cascade 2 Models:")
     run_time = time.clock() - start_time    
     print("run_time: {:.2f}sec".format(run_time))
-    print("infer_time: {:.2f}sec B={:.2f}, S={:.2f}".format(inferB_time+inferS_time,inferB_time,inferS_time))
+    print("infer_time: {:.2f}sec b_b={:.2f}, p={:.2f}".format(inferB_time+inferS_time,inferB_time,inferS_time))
     print("processing_outputs_time: {:.4f}sec".format(processing_outputB_time+processing_outputS_time))
 
 def main():

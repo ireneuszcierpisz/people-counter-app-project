@@ -19,7 +19,7 @@ def get_args():
     i_desc = "Live stream 'CAM' or the location of the video file or image"
     d_desc = "The device name ('GPU', 'MYRIAD') if not 'CPU'"
     c_desc = "The color of the bounding boxes to draw; RED, GREEN or BLUE"
-    ct_desc = "The confidence threshold to use with the bounding boxes"
+    pt_desc = "The confidence/probability threshold to use with the bounding boxes"
     mf_desc = "Model flag 'B' for Bounding Boxes (output shape [1x1xNx7]) , 'P' for Pose Estimation (output blob shape  [1x19x32x57]), 'BP' for cascade two models"
     mode_desc = "App mode 'write' for video_writer.write() or 'mqtt' for sending data to MQTT server"
     
@@ -35,8 +35,8 @@ def get_args():
     required.add_argument("-mf", help=mf_desc, default='P')
     optional.add_argument("-i", "--input", help=i_desc, default= VIDEO)
     optional.add_argument("-d", help=d_desc, default='CPU')
-    optional.add_argument("-c", help=c_desc, default='RED')
-    optional.add_argument("-ct", help=ct_desc, type=float, default=0.6)
+    optional.add_argument("-c", help=c_desc, default="BLUE")
+    optional.add_argument("-pt", help=pt_desc, type=float, default=0.6)
     optional.add_argument("-mode", help=mode_desc, default='write')
     args = parser.parse_args()
 
