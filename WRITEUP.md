@@ -6,7 +6,19 @@ The process behind converting custom layers involves...
 
 Some of the potential reasons for handling custom layers are...
 
+## Assess Model Use Cases
+
+Some potential use cases of the people counter application are security in places such as the Helth Centeror airports, statistics for retailers, shopping centers, public transport, police and traffic management.
+
+Each of these use cases would be useful because it could improve organization and management in these places, and also use resources more efficiently. Where security is concerned, the application could inform security, e.g. how many people are still on the premises.
+
+## Assess Effects on End User Needs
+
+Lighting, model accuracy, and camera focal length/image size have different effects on a
+deployed edge model. The potential effects of each of these are as follows...
+
 ## Comparing Model Performance
+I've used to use Udacity workspace and OpenVINO environment and my app uses Intel IE so for start inference it need model IR. Below I compare few models after conversion to IR.
 
 My method(s) to compare models before and after conversion to Intermediate Representations
 were...
@@ -16,17 +28,6 @@ The difference between model accuracy pre- and post-conversion was...
 The size of the model pre- and post-conversion was...
 
 The inference time of the model pre- and post-conversion was...
-
-## Assess Model Use Cases
-
-Some of the potential use cases of the people counter app are...
-
-Each of these use cases would be useful because...
-
-## Assess Effects on End User Needs
-
-Lighting, model accuracy, and camera focal length/image size have different effects on a
-deployed edge model. The potential effects of each of these are as follows...
 
 ## Model Research
 
@@ -55,32 +56,40 @@ Details: Reference to image is not satisfied. A node refer not existing data ten
 
 - Model 5: [TF MODEL ssdlite_mobilenet_v2]
   - [Model source: https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md]
-  - running app on single image:
-    Time of Inference on 1 frame: 0.0403
-    Time of Processing output on 1 frame: 0.001092
-    INFO:root:Size of frame sent to the server: (453, 883, 3)
-    run_time: 0.44sec
-    infer_time: 0.04sec B=0.04, S=0.00
-    processing_outputs_time: 0.0011sec
-  -running app on short video:
-    INFO:root:The original frame shape: width=1920, height=1080
-    INFO:root:Streaming 29.9fps
-    INFO:root:Frame stamp 0.033sec
-    INFO:root:Number of frames in video: 74.0
-    run_time: 21.19sec
-    infer_time: 2.37sec B=2.37, S=0.00
-    processing_outputs_time: 0.0861sec
-    * av-dur-time: 0.219sec
-    * total_counted: 9
-  -running app on video Pedestrian_Detect_2_1_1.mp4:
-    INFO:root:The original frame shape: width=768, height=432
-    INFO:root:Streaming 10.0fps
-    INFO:root:Frame stamp 0.100sec
-    INFO:root:Number of frames in video: 1394.0
-    run_time: 72.42sec
-    infer_time: 43.36sec B=43.36, S=0.00
-    processing_outputs_time: 1.2489sec
-  - model performance: model ssdlite_mobilenet_v2_coco is very fast but inefficient for person tracking, missing a bounding boxes on multiple frames, or detect several bb for one person in comparison to the human-pose-estimation-001 from Intel Model Zoo performance for the same video with 2 persons:
+    - running app on a single image:
+  
+          Time of Inference on 1 frame: 0.0403   
+          Time of Processing output on 1 frame: 0.001092  
+          INFO:root:Size of frame sent to the server: (453, 883, 3)    
+          run_time: 0.44sec    
+          infer_time: 0.04sec B=0.04, S=0.00
+          processing_outputs_time: 0.0011sec
+    
+    - running app on a short video with 2 persons:
+
+          INFO:root:The original frame shape: width=1920, height=1080
+          INFO:root:Streaming 29.9fps
+          INFO:root:Frame stamp 0.033sec
+          INFO:root:Number of frames in video: 74.0
+          run_time: 21.19sec
+          infer_time: 2.37sec B=2.37, S=0.00
+          processing_outputs_time: 0.0861sec
+              * av-dur-time: 0.219sec
+              * total_counted: 9
+    
+    - running app on video Pedestrian_Detect_2_1_1.mp4:
+
+          INFO:root:The original frame shape: width=768, height=432
+          INFO:root:Streaming 10.0fps
+          INFO:root:Frame stamp 0.100sec
+          INFO:root:Number of frames in video: 1394.0
+          run_time: 72.42sec
+          infer_time: 43.36sec B=43.36, S=0.00
+          processing_outputs_time: 1.2489sec
+    
+    - model performance: 
+        model ssdlite_mobilenet_v2_coco is very fast but inefficient for person tracking (it's missing a bounding boxes in multiple frames, or detect in one frame several bb for one person) in comparison to the human-pose-estimation-001 from Intel Model Zoo.  The human-pose-estimation-001 performance on the same short video with 2 persons:
+  
                 INFO:root:The original frame shape: width=1920, height=1080
                 INFO:root:Streaming 29.9fps
                 INFO:root:Frame stamp 0.033sec
@@ -88,62 +97,68 @@ Details: Reference to image is not satisfied. A node refer not existing data ten
                 run_time: 188.10sec
                 infer_time: 17.05sec B=0.00, S=17.05
                 processing_outputs_time: 152.2976sec
-                * av-dur-time: 1.571sec
-                * total_counted: 3
+                  * av-dur-time: 1.571sec
+                  * total_counted: 3
     
 - Model 6: [TF MODEL ssd_mobilenet_v2_coco_2018_03_29]
   - [Model source: https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md]
 
-  - BOUNDING_BOXES & POSE CASCADE
-    - runnin app on video with 2 people:
-        models/ssd_mobilenet_v2_coco_2018_03_29/frozen_inference_graph.xml
-        models/human-pose-estimation-0001.xml
-        Device:CPU
-        INFO:root:The original frame shape: width=1920, height=1080
-        INFO:root:Streaming 30fps
-        INFO:root:Frame stamp 0.03sec
-        INFO:root:Number of frames in video: 51
-        INFO:root:Case of Cascade 2 Models.
-        run_time: 133.39sec
-        infer_time: 15.20sec b_b=3.59, p=11.61
-        processing_outputs_time: 105.9863sec
-        * video-dur-time: 1.667sec
-        * bb>>av-dur-time: 0.328sec
-        * p>> av-dur-time: 1.667sec
-        * bb>>total_counted: 6
-        * p >>total_counted: 2
-    in this case model human-pose-estimation-0001 100% accurate
+    - CASCADE OF BOUNDING_BOXES MODEL & HUMAN-POSE-ESTIMATION MODEL
+  
+          - runnin app on short video with 2 persons in each frame:
+              models/ssd_mobilenet_v2_coco_2018_03_29/frozen_inference_graph.xml
+              models/human-pose-estimation-0001.xml
+              Device:CPU
+              INFO:root:The original frame shape: width=1920, height=1080
+              INFO:root:Streaming 30fps
+              INFO:root:Frame stamp 0.03sec
+              INFO:root:Number of frames in video: 51
+              INFO:root:Case of Cascade 2 Models.
+              run_time: 133.39sec
+              infer_time: 15.20sec b_b=3.59, p=11.61
+              processing_outputs_time: 105.9863sec
+                * video-dur-time: 1.667sec
+                * bb>>av-dur-time: 0.328sec
+                * p>> av-dur-time: 1.667sec
+                * bb>>total_counted: 6
+                * p >>total_counted: 2
+          in this case model human-pose-estimation-0001 got a 100% accurate
 
-- Model human-pose-estimation-0001 and bb model person-detection-retail-0013 from Intel OpenVINO Model Zoo
-  - Cascade of two models:
-    - runnin app on video with 2 people:
-        INFO:root:The original frame shape: width=1920, height=1080
-        INFO:root:Streaming 29.9fps
-        INFO:root:Frame stamp 0.033sec
-        INFO:root:Number of frames in video: 74.0
-        INFO:root:Case of Cascade 2 Models:
-        run_time: 194.36sec
-        infer_time: 20.37sec b_b=3.43, p=16.94
-        processing_outputs_time: 154.4838sec
-        * video-dur-time: 2.440sec
-        * bb>>av-dur-time: 0.602sec
-        * p>> av-dur-time: 1.571sec
-        * bb>>total_counted: 4
-        * p >>total_counted: 3
-   in this case detecting bb model performs better than ssd_mobilenet_v2_coco_2018_03_29 but not so accurate as human-pose-estimation-0001 
-    - running app on video Pedestrian_Detect_2_1_1.mp4:
-        INFO:root:The original frame shape: width=768, height=432
-        INFO:root:Streaming 10.0fps
-        INFO:root:Frame stamp 0.100sec
-        INFO:root:Number of frames in video: 1394.0
-        INFO:root:Case of Cascade 2 Models:
-        run_time: 849.06sec
-        infer_time: 382.68sec b_b=63.15, p=319.53
-        processing_outputs_time: 434.4873sec
-        * video-dur-time: 139.3sec
-        * bb>>av-dur-time: 2.2sec
-        * p>> av-dur-time: 1.85sec
-        * bb>>total_counted: 5
-        * p >>total_counted: 6
+- Models: human-pose-estimation-0001 and bb model person-detection-retail-0013 from Intel OpenVINO Model Zoo
+     
+    - Cascade of two models:
+  
+        - runnin app on short video with 2 people:
+    
+              INFO:root:The original frame shape: width=1920, height=1080
+              INFO:root:Streaming 29.9fps
+              INFO:root:Frame stamp 0.033sec
+              INFO:root:Number of frames in video: 74.0
+              INFO:root:Case of Cascade 2 Models:
+              run_time: 194.36sec
+              infer_time: 20.37sec b_b=3.43, p=16.94
+              processing_outputs_time: 154.4838sec
+                  * video-dur-time: 2.440sec
+                  * bb>>av-dur-time: 0.602sec
+                  * p>> av-dur-time: 1.571sec
+                  * bb>>total_counted: 4
+                  * p >>total_counted: 3
+          in this case the person-detection-retail-0013 performs better than ssd_mobilenet_v2_coco_2018_03_29 but not so accurate as human-pose-estimation-0001 
+   
+        - running app on video Pedestrian_Detect_2_1_1.mp4:
+    
+              INFO:root:The original frame shape: width=768, height=432
+              INFO:root:Streaming 10.0fps
+              INFO:root:Frame stamp 0.100sec
+              INFO:root:Number of frames in video: 1394.0
+              INFO:root:Case of Cascade 2 Models:
+              run_time: 849.06sec
+              infer_time: 382.68sec b_b=63.15, p=319.53
+              processing_outputs_time: 434.4873sec
+                  * video-dur-time: 139.3sec
+                  * bb>>av-dur-time: 2.2sec
+                  * p>> av-dur-time: 1.85sec
+                  * bb>>total_counted: 5
+                  * p >>total_counted: 6
 
-The best results I got for model human-pose-estimation-0001 IR from Intel. 
+The best results I got using IR of model human-pose-estimation-0001 from Intel. 
