@@ -11,6 +11,7 @@ def capture_stream(args):
     # Checks if the input is a webcam
     if args.input == 'CAM':
         args.input = 0
+        log.info("The input is webcam!")
         
     # Checks if the input is a single image
     elif args.input.split('.')[-1] in ['jpg', 'gif', 'png', 'tiff', 'bmp']: 
@@ -26,15 +27,16 @@ def capture_stream(args):
     log.info('The original frame shape: width={}, height={}'.format(width, height))
 
     # # gets Frame Rate
-    fps = cap.get(cv2.CAP_PROP_FPS)
-    frame_stamp = 1/fps # in sec
-    log.info("Streaming {:.1f}fps".format(fps))
-    log.info("Frame stamp {:.3f}sec".format(frame_stamp))
+    if not image_flag:    
+        fps = cap.get(cv2.CAP_PROP_FPS)
+        frame_stamp = 1/fps # in sec
+        log.info("Streaming {:.0f}fps".format(fps))
+        log.info("Frame stamp {:.2f}sec".format(frame_stamp))
     
     # gets Number of Frames in the video file
     if not image_flag:
         nf = cap.get(cv2.CAP_PROP_FRAME_COUNT) 
-        log.info("Number of frames in video: {}".format(nf))
+        log.info("Number of frames in video: {:.0f}".format(nf))
     
     # Create a video writer for the output video
     if not image_flag:
@@ -42,4 +44,4 @@ def capture_stream(args):
     else:
         video_writer = None
         
-    return cap, video_writer, image_flag, height, width, frame_stamp
+    return cap, video_writer, image_flag, height, width

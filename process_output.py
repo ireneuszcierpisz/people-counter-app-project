@@ -1,11 +1,10 @@
 import numpy as np
 import cv2
 
-colors = {"BLUE":(255,0,0), "GREEN":(0,255,0), "RED":(0,0,255), "YELLOW":(0,255,255), "PURPLE":(240, 0, 159)}
-
+colors = {"BLUE":(128,0,0), "GREEN":(0,100,0), "RED":(0,0,255), "YELLOW":(0,215,255), "PURPLE":(128, 0, 128), "BLACK":(0,0,0), "WHITE":(255,255,255)}
 
 """ Process output for models detecting bounding boxes. """
-def process_output_bb(output, count, tracker, frame_copy, height, width, args, image_flag, ft, persons, PDT):
+def process_output_bb(output, count, tracker_b, frame_copy, height, width, args, image_flag, ft, persons_b, PDT_b):
     
     f = "frame"+str(count) 
     if count == 1:
@@ -14,15 +13,19 @@ def process_output_bb(output, count, tracker, frame_copy, height, width, args, i
     else:
         last_f = "frame"+str(count-1)
         
-    tracker[f] = {}
+    tracker_b[f] = {}
 
-    cv2.putText(frame_copy, "Frame{}   Time:{:.3f}sec".format(int(count), ft/1000), (width//100, height//10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors["GREEN"], 2)   
+    if width < 1000:
+        font_size = 0.5
+    else:
+        font_size = 0.8
+    cv2.putText(frame_copy, "Frame : {}   Time : {:.3f}sec".format(int(count), ft/1000), (width//100, height//10), cv2.FONT_HERSHEY_SIMPLEX, font_size, colors["RED"], 2)   
 
     person_id = 0 
     
     if image_flag:
         print("output shape:", output.shape)
-    # Update the frame to include detected bounding boxes and tracker
+    # Update the frame to include detected bounding boxes and tracker_b
     for i in range(len(output[0][0])):    # Output shape: 1x1xNofBoxesx7                   
         confidence = output[0][0][i][2]
 
@@ -35,63 +38,62 @@ def process_output_bb(output, count, tracker, frame_copy, height, width, args, i
             xc, yc = int((xmax-xmin)/2) + xmin, int((ymax-ymin)/2) + ymin
             
             # updates person_id and localization of a bounding box central point (xc,yc) at the frame
-            if persons : # if list of persons is not empty
+            if persons_b : # if list of persons is not empty
                 j = 0
                 not_found = True
                 while not_found:
-                    p = persons[j]
-                    if (abs(p[1]-xc) < 50) and (abs(p[2]-yc) < 50):
+                    p = persons_b[j]
+                    if (abs(p[1]-xc) < 70) and (abs(p[2]-yc) < 70):
                         person_id = p[0]
                         p[1], p[2] = xc, yc
                         not_found = False
                         continue
-                    elif j < len(persons)-1:
+                    elif j < len(persons_b)-1:
                         j += 1
                     else:
-                        persons.append([len(persons), xc , yc])
-                        person_id = persons[-1][0]
+                        persons_b.append([len(persons_b), xc , yc])
+                        person_id = persons_b[-1][0]
                         not_found = False
             else:
-                persons.append([0, xc, yc])
-                #print(persons)
+                persons_b.append([0, xc, yc])
                 person_id = 0
             
             #gets enter time, the time when bb/person entering this f frame
             entering_time = ft 
 
-            # updates the tracker dictionary with people entering_time list         
+            # updates the tracker_b dictionary with people entering_time list         
             person = "person"+str(person_id)
-            if person in tracker[last_f]:
-                tracker[f][person] = tracker[last_f][person] + [entering_time]
+            if person in tracker_b[last_f]:
+                tracker_b[f][person] = tracker_b[last_f][person] + [entering_time]
             # adjusts accounting of time for 1-2 frames
             # in case if the model fails to see a person already counted 
-            elif count > 2 and person in tracker["frame"+str(count-2)]:
-                tracker[f][person] = tracker["frame"+str(count-2)][person] + [entering_time]
-            elif count > 3 and person in tracker["frame"+str(count-3)]:
-                tracker[f][person] = tracker["frame"+str(count-3)][person] + [entering_time]                
+            elif count > 2 and person in tracker_b["frame"+str(count-2)]:
+                tracker_b[f][person] = tracker_b["frame"+str(count-2)][person] + [entering_time]
+            elif count > 3 and person in tracker_b["frame"+str(count-3)]:
+                tracker_b[f][person] = tracker_b["frame"+str(count-3)][person] + [entering_time]                
             else:                        
-                tracker[f].update({person: [entering_time]})
+                tracker_b[f].update({person: [entering_time]})
                 
-            person_duration_time = tracker[f][person][-1] - tracker[f][person][0]
+            person_duration_time = tracker_b[f][person][-1] - tracker_b[f][person][0]
 
             """ drawing bounding box and writing frame nr, time, person id, 
                     person duration time,number of people in the frame """
             cv2.rectangle(frame_copy, (xmin,ymin),(xmax,ymax), colors[args.c], 2 )
 
-            cv2.putText(frame_copy, "b{}   t: {:.3f}sec".format(person_id, person_duration_time/1000), (xmin, ymax//2), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors[args.c], 2)
+            cv2.putText(frame_copy, "b{}   t: {:.3f}sec".format(person_id, person_duration_time/1000), (xmin+5, ymin+15), cv2.FONT_HERSHEY_SIMPLEX, font_size, colors[args.c], 2)
     
-    # includes pdt(every person duration time) to the PDT dictionary
-    pdt = [(p, (t[-1] - t[0])) for p, t in tracker[f].items()]
+    # includes pdt(every person duration time) to the PDT_b dictionary
+    pdt = [(p, (t[-1] - t[0])) for p, t in tracker_b[f].items()]
     for e in pdt:
-        PDT[e[0]] = e[1]
+        PDT_b[e[0]] = e[1]
     # computes and writes average duration time for persons who have been detected
-    if len(PDT) > 0:
-        av = sum([v for v in PDT.values()])/len(PDT)   
-        cv2.putText(frame_copy, "b_b model>> Average Duration Time: {:.3f}sec".format(av/1000), (width//100, height//7+40), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors[args.c], 2) 
-    cv2.putText(frame_copy, "b_b model>> People in frame: {}".format(len(tracker[f])), (width//100, height//7), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors[args.c], 2)
-    cv2.putText(frame_copy, "b_b model>> Total counted: {}".format(len(persons)), (width//100, height//7+20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors[args.c], 2)
+    if len(PDT_b) > 0:
+        av = sum([v for v in PDT_b.values()])/len(PDT_b)   
+        cv2.putText(frame_copy, "b_box>> AvDurationTime: {:.3f}sec".format(av/1000), (width//100, height//7+40), cv2.FONT_HERSHEY_SIMPLEX, font_size, colors[args.c], 2) 
+    cv2.putText(frame_copy, "bb>> People in frame: {}".format(len(tracker_b[f])), (width//100, height//7), cv2.FONT_HERSHEY_SIMPLEX, font_size, colors[args.c], 2)
+    cv2.putText(frame_copy, "bb>> Total counted: {}".format(len(persons_b)), (width//100, height//7+20), cv2.FONT_HERSHEY_SIMPLEX, font_size, colors[args.c], 2)
                       
-    return frame_copy, count, tracker, persons, PDT
+    return frame_copy, count, tracker_b, persons_b, PDT_b
 
 
 
@@ -130,83 +132,88 @@ def getPoints_toTrackPose(xlist, ylist):
     return c_points
 
 
-def load_poseTracker(count, tracker, frame_copy, height, width, ft, persons, PDT, c_points):
+def load_poseTracker(count, tracker_p, frame_copy, height, width, ft, persons_p, PDT_p, c_points):
+    if width < 1000:
+        font_size = 0.5
+    else:
+        font_size = 0.8
+        
     f = "frame"+str(count) 
     if count == 1:
         last_f = f
     else:
         last_f = "frame"+str(count-1)    
-    tracker[f] = {} 
+    tracker_p[f] = {} 
     
     for cp in c_points:
         xc, yc = c_points[cp][0], c_points[cp][1]
         # updates person_id and localization of a neck point (xc,yc) at the frame 
-        if persons : # if list of persons is not empty
+        if persons_p : # if list of persons is not empty
             j = 0
             not_found = True
             while not_found:
-                p = persons[j]
-                if (abs(p[1]-xc) < 50) and (abs(p[2]-yc) < 50):
+                p = persons_p[j]
+                if (abs(p[1]-xc) < 70) and (abs(p[2]-yc) < 70):
                     person_id = p[0]
                     p[1], p[2] = xc, yc
                     not_found = False
                     continue
-                elif j < len(persons)-1:
+                elif j < len(persons_p)-1:
                     j += 1
                 else:
-                    persons.append([len(persons), xc , yc])
-                    person_id = persons[-1][0]
+                    persons_p.append([len(persons_p), xc , yc])
+                    person_id = persons_p[-1][0]
                     not_found = False
         else:
-            persons.append([0, xc, yc])
+            persons_p.append([0, xc, yc])
             person_id = 0
 
         #gets enter time, the time when bb/person entering this f frame
         entering_time = ft     
         
-        # updates the tracker dictionary with people entering_time list         
+        # updates the tracker_p dictionary with people entering_time list         
         person = "person"+str(person_id)
-        if person in tracker[last_f]:
-            tracker[f][person] = tracker[last_f][person] + [entering_time]
+        if person in tracker_p[last_f]:
+            tracker_p[f][person] = tracker_p[last_f][person] + [entering_time]
         # adjusts accounting of time for 1-2 frames
         #     in case if the model fails to see a person already counted 
-        elif count > 2 and person in tracker["frame"+str(count-2)]:
-            tracker[f][person] = tracker["frame"+str(count-2)][person] + [entering_time]
-        elif count > 3 and person in tracker["frame"+str(count-3)]:
-            tracker[f][person] = tracker["frame"+str(count-3)][person] + [entering_time]                
+        elif count > 2 and person in tracker_p["frame"+str(count-2)]:
+            tracker_p[f][person] = tracker_p["frame"+str(count-2)][person] + [entering_time]
+        elif count > 3 and person in tracker_p["frame"+str(count-3)]:
+            tracker_p[f][person] = tracker_p["frame"+str(count-3)][person] + [entering_time]                
         else:                        
-            tracker[f].update({person: [entering_time]})
+            tracker_p[f].update({person: [entering_time]})
             
-        person_duration_time = tracker[f][person][-1] - tracker[f][person][0]
+        person_duration_time = tracker_p[f][person][-1] - tracker_p[f][person][0]
 
         """ drawing and writing frame nr, time, person id, 
                 person duration time, number of people in the frame """
 
-        cv2.putText(frame_copy, "p{}   t: {:.3f}sec".format(person_id, person_duration_time/1000), (xc, yc), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0,255,255), 2)            
-
-    # includes pdt(person duration time) to the PDT(People Duration Time) dictionary
-    pdt = [(p, (t[-1] - t[0])) for p, t in tracker[f].items()]
+        cv2.putText(frame_copy, ".p{}   t: {:.3f}sec".format(person_id, person_duration_time/1000), (xc, yc), cv2.FONT_HERSHEY_SIMPLEX, font_size, colors["GREEN"], 2)            
+    
+    # includes pdt(person duration time) to the PDT_p(People Duration Time) dictionary
+    pdt = [(p, (t[-1] - t[0])) for p, t in tracker_p[f].items()]
     for e in pdt:
-        PDT[e[0]] = e[1]
+        PDT_p[e[0]] = e[1]
         
     # computes and writes average duration time for all persons who have been detected
     duration = 0
-    if len(PDT) > 0:
-        duration = (sum([v for v in PDT.values()])/len(PDT)) / 1000
-        cv2.putText(frame_copy, "pose model>> Average Duration Time: {:.3f}sec".format(duration), (width//100, height//4+40), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors["YELLOW"], 2)
+    if len(PDT_p) > 0:
+        duration = (sum([v for v in PDT_p.values()])/len(PDT_p)) / 1000
+        cv2.putText(frame_copy, "p>> AvDurationTime: {:.3f}sec".format(duration), (width//100, height//4+60), cv2.FONT_HERSHEY_SIMPLEX, font_size, colors["GREEN"], 2)
         
     # computes and writes current_count
-    current_count = len(tracker[f])
-    cv2.putText(frame_copy, "pose model>> People in frame: {}".format(current_count), (width//100, height//4), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors["YELLOW"], 2)
+    current_count = len(tracker_p[f])
+    cv2.putText(frame_copy, "p>> People in frame: {}".format(current_count), (width//100, height//4+20), cv2.FONT_HERSHEY_SIMPLEX, font_size, colors["GREEN"], 2)
     
     # computes and writes total_count
-    total_count = len(persons)
-    cv2.putText(frame_copy, "pose model>> Total counted: {}".format(total_count), (width//100, height//4+20), cv2.FONT_HERSHEY_SIMPLEX, 0.6, colors["YELLOW"], 2)        
+    total_count = len(persons_p)
+    cv2.putText(frame_copy, "pose>> Total counted: {}".format(total_count), (width//100, height//4+40), cv2.FONT_HERSHEY_SIMPLEX, font_size, colors["GREEN"], 2)        
     
-    return count, tracker, persons, PDT, duration, current_count, total_count
+    return count, tracker_p, persons_p, PDT_p, duration, current_count, total_count
 
 
-def process_pose(output, count, tracker, frame_copy, height, width, ft, persons, PDT):
+def process_pose(output, count, tracker_p, frame_copy, height, width, ft, persons_p, PDT_p):
     
     # Makes heatmap and resize it to the size of the input
     heatmap = np.zeros([output.shape[1], height, width])    
@@ -232,7 +239,7 @@ def process_pose(output, count, tracker, frame_copy, height, width, ft, persons,
     # gets central joint/neck point for each person at a frame
     c_points = getPoints_toTrackPose(jointx, jointy)
     
-    # load tracker
-    count, tracker, persons, PDT, duration, current_count, total_count = load_poseTracker(count, tracker, frame_copy, height, width, ft, persons, PDT, c_points)
+    # load tracker_p
+    count, tracker_p, persons_p, PDT_p, duration, current_count, total_count = load_poseTracker(count, tracker_p, frame_copy, height, width, ft, persons_p, PDT_p, c_points)
     
-    return frame_copy, count, tracker, persons, PDT, duration, current_count, total_count
+    return frame_copy, count, tracker_p, persons_p, PDT_p, duration, current_count, total_count

@@ -38,7 +38,6 @@ import ffmpeg
 
 logging.getLogger().setLevel(logging.INFO)
 
-CPU_EXTENSION = "/opt/intel/openvino/deployment_tools/inference_engine/lib/intel64/libcpu_extension_sse4.so"
 
 # MQTT server environment variables
 HOSTNAME = socket.gethostname()
@@ -57,8 +56,8 @@ def connect_mqtt():
 
 def infer_on_stream(args, start_time, client):
     app_mode = args.mode
-    
     device = args.d 
+    CPU_EXTENSION = args.cpu_extension
     
     #choose model for inference
     model_flag = args.mf
@@ -90,13 +89,18 @@ def infer_on_stream(args, start_time, client):
     
     # Get and open video capture
     cap, video_writer, image_flag, height, width = capture_stream(args)
-    logging.info('Video captured.')
+    if image_flag:
+        logging.info('Single image captured.')
+    else:
+        logging.info('Video/stream captured.')
     
-    # creates tracker dict to collect objects location points
-    tracker = {} 
-    
-    persons = [] #list to collect persons/bboxes data
-    PDT = {} # dict to collect persons duration times
+    # creates trackers dict to collect objects location central points for two models
+    tracker_b = {} 
+    persons_b = [] #list to collect persons/bboxes data
+    PDT_b = {} # dict to collect persons duration times
+    tracker_p = {}
+    persons_p = [] #list to collect persons (joint point) last position (xc,yc coordinates)
+    PDT_p = {}
 
     if app_mode != "mqtt":
         logging.info("  ! It's NOT  MQTT  MODE! >> for MQTT please use command line argument: -mode 'mqtt'")
@@ -145,7 +149,7 @@ def infer_on_stream(args, start_time, client):
 
                 # Process the net_bb output
                 start_process_output = time.clock() 
-                frame_copy, count, tracker, persons, PDT = process_output_bb(output_bb, count, tracker, frame_copy, height, width, args, image_flag, ft, persons, PDT)    
+                frame_copy, count, tracker_b, persons_b, PDT_b = process_output_bb(output_bb, count, tracker_b, frame_copy, height, width, args, image_flag, ft, persons_b, PDT_b)    
                 processing_outputB_time += time.clock() - start_process_output
                 if image_flag: print("Time of Processing output on 1 frame: {:.4}".format(processing_outputB_time))
                               
@@ -161,20 +165,25 @@ def infer_on_stream(args, start_time, client):
 
                 # Process the net_s output
                 start_process_output = time.clock()
-                frame_copy, count, tracker, persons, PDT, duration, current_count, total_count = process_pose(output_s, count, tracker, frame_copy, height, width, ft, persons, PDT)
+                frame_copy, count, tracker_p, persons_p, PDT_p, duration, current_count, total_count = process_pose(output_s, count, tracker_p, frame_copy, height, width, ft, persons_p, PDT_p)
                 processing_outputS_time += time.clock() - start_process_output
-                if image_flag: print("Time of Processing output on 1 frame: {:.4}".format(processing_outputS_time))
+
+                if image_flag: 
+                    logging.info("Time of Processing output on 1 frame: {:.4}".format(processing_outputS_time))
+                    logging.info("current_count: {}, total_count: {}, duration: {}".format(current_count, total_count, duration))
 
                 if app_mode == "mqtt":
                     # gets current_count, total_count and duration and send to the MQTT server
                     # Topic "person": keys of "count" and "total" , Topic "person/duration": key of "duration"    
                     client.publish("person", json.dumps({'count': current_count, 'total': total_count}))
                     client.publish("person/duration", json.dumps({'duration': duration}))
+#                     logging.info("!!!data sent to mqtt server")
                 
         if app_mode == "mqtt":
             # Sends frame to the ffmpeg server
             sys.stdout.buffer.write(frame_copy)
             sys.stdout.flush()
+#             logging.info("!!!frame sent to ffmpeg server")
                 
         # Writes an output image if single_image_mode
         # Write out the frame_copy
@@ -194,7 +203,8 @@ def infer_on_stream(args, start_time, client):
     # Close the video writer if the input is not image
     if not image_flag:
         video_writer.release()
-        logging.info("          ! Got output_video!")
+        if app_mode != "mqtt":
+            logging.info("          ! Got output_video!")
         
     # Close video file and allow OpenCV to release the captured file
     cap.release()
@@ -206,11 +216,12 @@ def infer_on_stream(args, start_time, client):
         client.disconnect()    
     
     if model_flag == "BP":
-        logging.info("Case of Cascade 2 Models:")
+        logging.info("Case of Cascade 2 Models.")
     run_time = time.clock() - start_time    
     print("run_time: {:.2f}sec".format(run_time))
     print("infer_time: {:.2f}sec b_b={:.2f}, p={:.2f}".format(inferB_time+inferS_time,inferB_time,inferS_time))
     print("processing_outputs_time: {:.4f}sec".format(processing_outputB_time+processing_outputS_time))
+
 
 def main():
 
