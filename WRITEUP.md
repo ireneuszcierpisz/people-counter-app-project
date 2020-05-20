@@ -56,12 +56,14 @@ Details: Reference to image is not satisfied. A node refer not existing data ten
 - Model 5: [TF MODEL ssdlite_mobilenet_v2]
   - [Model source: https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md]
   - running app on single image:
-    Time of Inference on 1 frame: 0.0403
-    Time of Processing output on 1 frame: 0.001092
-    INFO:root:Size of frame sent to the server: (453, 883, 3)
-    run_time: 0.44sec
+  
+    Time of Inference on 1 frame: 0.0403   
+    Time of Processing output on 1 frame: 0.001092  
+    INFO:root:Size of frame sent to the server: (453, 883, 3)    
+    run_time: 0.44sec    
     infer_time: 0.04sec B=0.04, S=0.00
     processing_outputs_time: 0.0011sec
+    
   -running app on short video:
     INFO:root:The original frame shape: width=1920, height=1080
     INFO:root:Streaming 29.9fps
