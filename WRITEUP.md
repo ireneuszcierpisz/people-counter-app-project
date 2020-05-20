@@ -57,34 +57,34 @@ Details: Reference to image is not satisfied. A node refer not existing data ten
   - [Model source: https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md]
     - running app on a single image:
   
-        Time of Inference on 1 frame: 0.0403   
-        Time of Processing output on 1 frame: 0.001092  
-        INFO:root:Size of frame sent to the server: (453, 883, 3)    
-        run_time: 0.44sec    
-        infer_time: 0.04sec B=0.04, S=0.00
-        processing_outputs_time: 0.0011sec
+          Time of Inference on 1 frame: 0.0403   
+          Time of Processing output on 1 frame: 0.001092  
+          INFO:root:Size of frame sent to the server: (453, 883, 3)    
+          run_time: 0.44sec    
+          infer_time: 0.04sec B=0.04, S=0.00
+          processing_outputs_time: 0.0011sec
     
-     - running app on a short video with 2 persons:
+    - running app on a short video with 2 persons:
 
-        INFO:root:The original frame shape: width=1920, height=1080
-        INFO:root:Streaming 29.9fps
-        INFO:root:Frame stamp 0.033sec
-        INFO:root:Number of frames in video: 74.0
-        run_time: 21.19sec
-        infer_time: 2.37sec B=2.37, S=0.00
-        processing_outputs_time: 0.0861sec
-            * av-dur-time: 0.219sec
-            * total_counted: 9
+          INFO:root:The original frame shape: width=1920, height=1080
+          INFO:root:Streaming 29.9fps
+          INFO:root:Frame stamp 0.033sec
+          INFO:root:Number of frames in video: 74.0
+          run_time: 21.19sec
+          infer_time: 2.37sec B=2.37, S=0.00
+          processing_outputs_time: 0.0861sec
+              * av-dur-time: 0.219sec
+              * total_counted: 9
     
-      - running app on video Pedestrian_Detect_2_1_1.mp4:
+    - running app on video Pedestrian_Detect_2_1_1.mp4:
 
-        INFO:root:The original frame shape: width=768, height=432
-        INFO:root:Streaming 10.0fps
-        INFO:root:Frame stamp 0.100sec
-        INFO:root:Number of frames in video: 1394.0
-        run_time: 72.42sec
-        infer_time: 43.36sec B=43.36, S=0.00
-        processing_outputs_time: 1.2489sec
+          INFO:root:The original frame shape: width=768, height=432
+          INFO:root:Streaming 10.0fps
+          INFO:root:Frame stamp 0.100sec
+          INFO:root:Number of frames in video: 1394.0
+          run_time: 72.42sec
+          infer_time: 43.36sec B=43.36, S=0.00
+          processing_outputs_time: 1.2489sec
     
     - model performance: 
         model ssdlite_mobilenet_v2_coco is very fast but inefficient for person tracking (it's missing a bounding boxes in multiple frames, or detect in one frame several bb for one person) in comparison to the human-pose-estimation-001 from Intel Model Zoo.  The human-pose-estimation-001 performance on the same short video with 2 persons:
@@ -125,39 +125,39 @@ Details: Reference to image is not satisfied. A node refer not existing data ten
 
 - Models: human-pose-estimation-0001 and bb model person-detection-retail-0013 from Intel OpenVINO Model Zoo
      
-  - Cascade of two models:
+    - Cascade of two models:
   
-      - runnin app on short video with 2 people:
+        - runnin app on short video with 2 people:
     
-        INFO:root:The original frame shape: width=1920, height=1080
-        INFO:root:Streaming 29.9fps
-        INFO:root:Frame stamp 0.033sec
-        INFO:root:Number of frames in video: 74.0
-        INFO:root:Case of Cascade 2 Models:
-        run_time: 194.36sec
-        infer_time: 20.37sec b_b=3.43, p=16.94
-        processing_outputs_time: 154.4838sec
-            * video-dur-time: 2.440sec
-            * bb>>av-dur-time: 0.602sec
-            * p>> av-dur-time: 1.571sec
-            * bb>>total_counted: 4
-            * p >>total_counted: 3
-        in this case the person-detection-retail-0013 performs better than ssd_mobilenet_v2_coco_2018_03_29 but not so accurate as human-pose-estimation-0001 
+              INFO:root:The original frame shape: width=1920, height=1080
+              INFO:root:Streaming 29.9fps
+              INFO:root:Frame stamp 0.033sec
+              INFO:root:Number of frames in video: 74.0
+              INFO:root:Case of Cascade 2 Models:
+              run_time: 194.36sec
+              infer_time: 20.37sec b_b=3.43, p=16.94
+              processing_outputs_time: 154.4838sec
+                  * video-dur-time: 2.440sec
+                  * bb>>av-dur-time: 0.602sec
+                  * p>> av-dur-time: 1.571sec
+                  * bb>>total_counted: 4
+                  * p >>total_counted: 3
+          in this case the person-detection-retail-0013 performs better than ssd_mobilenet_v2_coco_2018_03_29 but not so accurate as human-pose-estimation-0001 
    
-    - running app on video Pedestrian_Detect_2_1_1.mp4:
+        - running app on video Pedestrian_Detect_2_1_1.mp4:
     
-        INFO:root:The original frame shape: width=768, height=432
-        INFO:root:Streaming 10.0fps
-        INFO:root:Frame stamp 0.100sec
-        INFO:root:Number of frames in video: 1394.0
-        INFO:root:Case of Cascade 2 Models:
-        run_time: 849.06sec
-        infer_time: 382.68sec b_b=63.15, p=319.53
-        processing_outputs_time: 434.4873sec
-            * video-dur-time: 139.3sec
-            * bb>>av-dur-time: 2.2sec
-            * p>> av-dur-time: 1.85sec
-            * bb>>total_counted: 5
-            * p >>total_counted: 6
+              INFO:root:The original frame shape: width=768, height=432
+              INFO:root:Streaming 10.0fps
+              INFO:root:Frame stamp 0.100sec
+              INFO:root:Number of frames in video: 1394.0
+              INFO:root:Case of Cascade 2 Models:
+              run_time: 849.06sec
+              infer_time: 382.68sec b_b=63.15, p=319.53
+              processing_outputs_time: 434.4873sec
+                  * video-dur-time: 139.3sec
+                  * bb>>av-dur-time: 2.2sec
+                  * p>> av-dur-time: 1.85sec
+                  * bb>>total_counted: 5
+                  * p >>total_counted: 6
 
 The best results I got using IR of model human-pose-estimation-0001 from Intel. 
