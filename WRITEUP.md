@@ -6,7 +6,19 @@ The process behind converting custom layers involves...
 
 Some of the potential reasons for handling custom layers are...
 
+## Assess Model Use Cases
+
+Some potential use cases of the people counter application are security in places such as the Helth Centeror airports, statistics for retailers, shopping centers, public transport, police and traffic management.
+
+Each of these use cases would be useful because it could improve organization and management in these places, and also use resources more efficiently. Where security is concerned, the application could inform security, e.g. how many people are still on the premises.
+
+## Assess Effects on End User Needs
+
+Lighting, model accuracy, and camera focal length/image size have different effects on a
+deployed edge model. The potential effects of each of these are as follows...
+
 ## Comparing Model Performance
+I've used to use Udacity workspace and OpenVINO environment and my app uses Intel IE so for start inference it need model IR. Below I compare few models after conversion to IR.
 
 My method(s) to compare models before and after conversion to Intermediate Representations
 were...
@@ -16,17 +28,6 @@ The difference between model accuracy pre- and post-conversion was...
 The size of the model pre- and post-conversion was...
 
 The inference time of the model pre- and post-conversion was...
-
-## Assess Model Use Cases
-
-Some of the potential use cases of the people counter app are...
-
-Each of these use cases would be useful because...
-
-## Assess Effects on End User Needs
-
-Lighting, model accuracy, and camera focal length/image size have different effects on a
-deployed edge model. The potential effects of each of these are as follows...
 
 ## Model Research
 
