@@ -65,6 +65,7 @@ Details: Reference to image is not satisfied. A node refer not existing data ten
     processing_outputs_time: 0.0011sec
     
   -running app on short video:
+  
     INFO:root:The original frame shape: width=1920, height=1080
     INFO:root:Streaming 29.9fps
     INFO:root:Frame stamp 0.033sec
@@ -74,7 +75,9 @@ Details: Reference to image is not satisfied. A node refer not existing data ten
     processing_outputs_time: 0.0861sec
     * av-dur-time: 0.219sec
     * total_counted: 9
+    
   -running app on video Pedestrian_Detect_2_1_1.mp4:
+  
     INFO:root:The original frame shape: width=768, height=432
     INFO:root:Streaming 10.0fps
     INFO:root:Frame stamp 0.100sec
@@ -82,7 +85,9 @@ Details: Reference to image is not satisfied. A node refer not existing data ten
     run_time: 72.42sec
     infer_time: 43.36sec B=43.36, S=0.00
     processing_outputs_time: 1.2489sec
+    
   - model performance: model ssdlite_mobilenet_v2_coco is very fast but inefficient for person tracking, missing a bounding boxes on multiple frames, or detect several bb for one person in comparison to the human-pose-estimation-001 from Intel Model Zoo performance for the same video with 2 persons:
+  
                 INFO:root:The original frame shape: width=1920, height=1080
                 INFO:root:Streaming 29.9fps
                 INFO:root:Frame stamp 0.033sec
@@ -96,7 +101,8 @@ Details: Reference to image is not satisfied. A node refer not existing data ten
 - Model 6: [TF MODEL ssd_mobilenet_v2_coco_2018_03_29]
   - [Model source: https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md]
 
-  - BOUNDING_BOXES & POSE CASCADE
+  - BOUNDING_BOXES MODEL & HUMAN-POSE-ESTIMATION MODEL CASCADE
+  
     - runnin app on video with 2 people:
         models/ssd_mobilenet_v2_coco_2018_03_29/frozen_inference_graph.xml
         models/human-pose-estimation-0001.xml
@@ -118,7 +124,9 @@ Details: Reference to image is not satisfied. A node refer not existing data ten
 
 - Model human-pose-estimation-0001 and bb model person-detection-retail-0013 from Intel OpenVINO Model Zoo
   - Cascade of two models:
+  
     - runnin app on video with 2 people:
+    
         INFO:root:The original frame shape: width=1920, height=1080
         INFO:root:Streaming 29.9fps
         INFO:root:Frame stamp 0.033sec
@@ -132,8 +140,10 @@ Details: Reference to image is not satisfied. A node refer not existing data ten
         * p>> av-dur-time: 1.571sec
         * bb>>total_counted: 4
         * p >>total_counted: 3
-   in this case detecting bb model performs better than ssd_mobilenet_v2_coco_2018_03_29 but not so accurate as human-pose-estimation-0001 
+    in this case detecting bb model performs better than ssd_mobilenet_v2_coco_2018_03_29 but not so accurate as human-pose-estimation-0001 
+   
     - running app on video Pedestrian_Detect_2_1_1.mp4:
+    
         INFO:root:The original frame shape: width=768, height=432
         INFO:root:Streaming 10.0fps
         INFO:root:Frame stamp 0.100sec
