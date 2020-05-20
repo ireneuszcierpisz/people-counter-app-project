@@ -5,13 +5,14 @@ Intel® Edge AI for IoT Developers Nanodegree Program by Udacity.
 The app detects people in a designated area, providing the number of people in the frame, 
 average duration of people in frame, and total count.
 
-Please find sample results of App performance:
-      1. for single image 
-      2. for short video with two persons
+Please find sample results of App performance on the example of a:
+
+      1. single image 
+      2. short video with two persons
             a) Simultaneous performance of tf model ssd_mobilenet_v2_coco 
                   and pose_estimation model from Intel Model Zoo https://youtu.be/dMz_8uvoTAA 
             b) Cascade two models(outputs b.boxes and heatmap) from Intel OpenVino Model Zoo https://youtu.be/eNtujBDE--0
-      3. for original Udacity video
+      3. original Udacity video
             Two models from Intel OpenVINO Open Model Zoo: person-detection-retail-0013 outputs bounding boxes and human-pose-estimation-0001 outputs keypoint heatmaps, used simultaneously for counting and tracking people in video. The video shows the performance of both models https://youtu.be/jvBkiwHOY_g
             
             
