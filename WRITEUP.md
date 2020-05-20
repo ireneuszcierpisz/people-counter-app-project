@@ -64,7 +64,7 @@ Details: Reference to image is not satisfied. A node refer not existing data ten
         infer_time: 0.04sec B=0.04, S=0.00
         processing_outputs_time: 0.0011sec
     
-      -running app on a short video with 2 persons:
+     - running app on a short video with 2 persons:
 
         INFO:root:The original frame shape: width=1920, height=1080
         INFO:root:Streaming 29.9fps
@@ -73,10 +73,10 @@ Details: Reference to image is not satisfied. A node refer not existing data ten
         run_time: 21.19sec
         infer_time: 2.37sec B=2.37, S=0.00
         processing_outputs_time: 0.0861sec
-          * av-dur-time: 0.219sec
-          * total_counted: 9
+            * av-dur-time: 0.219sec
+            * total_counted: 9
     
-      -running app on video Pedestrian_Detect_2_1_1.mp4:
+      - running app on video Pedestrian_Detect_2_1_1.mp4:
 
         INFO:root:The original frame shape: width=768, height=432
         INFO:root:Streaming 10.0fps
@@ -127,7 +127,7 @@ Details: Reference to image is not satisfied. A node refer not existing data ten
      
   - Cascade of two models:
   
-    - runnin app on short video with 2 people:
+      - runnin app on short video with 2 people:
     
         INFO:root:The original frame shape: width=1920, height=1080
         INFO:root:Streaming 29.9fps
@@ -137,12 +137,12 @@ Details: Reference to image is not satisfied. A node refer not existing data ten
         run_time: 194.36sec
         infer_time: 20.37sec b_b=3.43, p=16.94
         processing_outputs_time: 154.4838sec
-          * video-dur-time: 2.440sec
-          * bb>>av-dur-time: 0.602sec
-          * p>> av-dur-time: 1.571sec
-          * bb>>total_counted: 4
-          * p >>total_counted: 3
-      in this case the person-detection-retail-0013 performs better than ssd_mobilenet_v2_coco_2018_03_29 but not so accurate as human-pose-estimation-0001 
+            * video-dur-time: 2.440sec
+            * bb>>av-dur-time: 0.602sec
+            * p>> av-dur-time: 1.571sec
+            * bb>>total_counted: 4
+            * p >>total_counted: 3
+        in this case the person-detection-retail-0013 performs better than ssd_mobilenet_v2_coco_2018_03_29 but not so accurate as human-pose-estimation-0001 
    
     - running app on video Pedestrian_Detect_2_1_1.mp4:
     
@@ -154,10 +154,10 @@ Details: Reference to image is not satisfied. A node refer not existing data ten
         run_time: 849.06sec
         infer_time: 382.68sec b_b=63.15, p=319.53
         processing_outputs_time: 434.4873sec
-          * video-dur-time: 139.3sec
-          * bb>>av-dur-time: 2.2sec
-          * p>> av-dur-time: 1.85sec
-          * bb>>total_counted: 5
-          * p >>total_counted: 6
+            * video-dur-time: 139.3sec
+            * bb>>av-dur-time: 2.2sec
+            * p>> av-dur-time: 1.85sec
+            * bb>>total_counted: 5
+            * p >>total_counted: 6
 
 The best results I got using IR of model human-pose-estimation-0001 from Intel. 
