@@ -8,17 +8,17 @@ average duration of people in frame and total count, using **Intel®** hardware 
 
 Please find sample results of App performance on the:
 
-      1. single image [here](https://github.com/ireneuszcierpisz/people-counter-app-project/blob/master/images/4show-I_pd-pe_orig.jpg)
+      1. single image [here]https://github.com/ireneuszcierpisz/people-counter-app-project/blob/master/images/4show-I_pd-pe_orig.jpg
       
       2. very short video with two persons
             a) Simultaneous performance of **tf model ssd_mobilenet_v2_coco** and **pose_estimation model** 
-               from Intel Model Zoo [here](https://youtu.be/dMz_8uvoTAA)
-            b) Cascade two models(outputs b.boxes and heatmap) from Intel OpenVino Model Zoo [here](https://youtu.be/eNtujBDE--0)
+               from Intel Model Zoo [here]https://youtu.be/dMz_8uvoTAA
+            b) Cascade two models(outputs b.boxes and heatmap) from Intel OpenVino Model Zoo [here]https://youtu.be/eNtujBDE--0
                   
       3. original Udacity video
             Two models from Intel OpenVINO Open Model Zoo: person-detection-retail-0013 outputs bounding boxes 
             and human-pose-estimation-0001 outputs keypoint heatmaps, used simultaneously 
-            for counting and tracking people in video. The [video](https://youtu.be/jvBkiwHOY_g) shows the performance of both models 
+            for counting and tracking people in video. The [video]https://youtu.be/jvBkiwHOY_g shows the performance of both models 
                       
            
 **The counter uses the Inference Engine included in the Intel® Distribution of OpenVINO™ Toolkit.**
