@@ -8,7 +8,7 @@ average duration of people in frame and total count, using **Intel®** hardware 
 
 Please find sample results of App performance on the:
 
-      1. single image [here]https://github.com/ireneuszcierpisz/people-counter-app-project/blob/master/images/4show-I_pd-pe_orig.jpg
+      1. single image [here: https://github.com/ireneuszcierpisz/people-counter-app-project/blob/master/images/4show-I_pd-pe_orig.jpg]
       
       2. very short video with two persons
             a) Simultaneous performance of **tf model ssd_mobilenet_v2_coco** and **pose_estimation model** 
