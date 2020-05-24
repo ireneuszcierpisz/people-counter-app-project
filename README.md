@@ -6,7 +6,7 @@
 The app detects people in a designated area, providing the number of people in the frame, 
 average duration of people in frame and total count, using **Intel®** hardware and software tools.
 
-Please find sample results of App performance on the:
+Please find sample **results** of App performance **on videos**:
 
    1. single image <a href="https://github.com/ireneuszcierpisz/people-counter-app-project/blob/master/images/4show-I_pd-pe_orig.jpg">here</a>
       
@@ -18,9 +18,10 @@ Please find sample results of App performance on the:
       b) **Cascade** two models(outputs b.boxes and heatmap) from Intel OpenVino Model Zoo [here](https://youtu.be/eNtujBDE--0)
                   
    3. original Udacity video
-            Two models from Intel OpenVINO Open Model Zoo: **person-detection-retail-0013** outputs bounding boxes            
-            and **human-pose-estimation-0001** outputs keypoint heatmaps, used simultaneously 
-            for counting and tracking people in video. The [video](https://youtu.be/jvBkiwHOY_g shows the performance of both models)
+   
+      - **Cascade** two models from Intel OpenVINO Open Model Zoo: 
+      
+      **person-detection-retail-0013** outputs bounding boxes and **human-pose-estimation-0001** outputs keypoint heatmaps, used simultaneously for counting and tracking people in video. The [video](https://youtu.be/jvBkiwHOY_g) shows the performance of both models.
                       
            
 **The counter uses the Inference Engine included in the Intel® Distribution of OpenVINO™ Toolkit.**
@@ -30,7 +31,7 @@ Please find sample results of App performance on the:
 
 Run inference on an input live stream, video or single image. 
 
-Use the **-mf** argument to choose a model or **to cascade two models** at the same time
+Use the **-mf** argument to choose a model or **to cascade two models** at the same time.
 
       [-h] [-mbb MBB]
       [-ms MS] [-mf MF]
