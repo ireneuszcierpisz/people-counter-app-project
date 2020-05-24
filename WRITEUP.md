@@ -6,36 +6,24 @@ According to OpenVINO Toolkit >> Custom Layer Extensions for the Inference Engin
 "Each device plugin includes a library of optimized implementations to execute known layer operations which must be extended to execute a custom layer. 
 The custom layer extension is implemented according to the target device:
 Custom Layer CPU Extension - is a compiled shared library (.so or .dll binary) needed by the CPU Plugin for executing the custom layer on the CPU."
+"Layer — The abstract concept of a math function that is selected for a specific purpose (relu, sigmoid, tanh, convolutional)." 
 
 I use in my app the AddExtension method to load the extensions when for models featuring layers from this library.
 I use check_layers.py to see the layers that are supported by device plugin for the Inference Engine.
 
-The process behind converting custom layers involves...
-
-Some of the potential reasons for handling custom layers are...
-
 ## Assess Model Use Cases
 
-Some potential use cases of the people counter application are security in places such as the Helth Centeror airports, statistics for retailers, shopping centers, public transport, police and traffic management.
+Some potential use cases of the people counter application are security in places such as the Helth Center or airports, statistics for retailers, shopping centers, public transport, police and traffic management.
 
-Each of these use cases would be useful because it could improve organization and management in these places, and also use resources more efficiently. Where security is concerned, the application could inform security, e.g. how many people are still on the premises.
+Each of that use cases would be useful because it could improve organization and management in these places, and also use resources more efficiently. Where security is concerned, the application could inform security e.g. how many people are still on the premises; how many people entered the museum and how many left before closing time etc. Where business is concerned e.g.: how many people were admitted to the concert vs. how many tickets have been sold.
 
 ## Assess Effects on End User Needs
 
 Lighting, model accuracy, and camera focal length/image size have different effects on a
-deployed edge model. The potential effects of each of these are as follows...
+deployed edge model.
 
 ## Comparing Model Performance
-I've used to use Udacity workspace and OpenVINO environment and my app uses Intel IE so for start inference it need model IR. Below I compare few models after conversion to IR.
-
-My method(s) to compare models before and after conversion to Intermediate Representations
-were...
-
-The difference between model accuracy pre- and post-conversion was...
-
-The size of the model pre- and post-conversion was...
-
-The inference time of the model pre- and post-conversion was...
+I've used Udacity workspace and OpenVINO environment and my app uses Intel IE so for start inference it needs model IR. Below I compare few models after conversion to IR.
 
 ## Model Research
 
