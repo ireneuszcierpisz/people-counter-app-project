@@ -1,8 +1,8 @@
 # Deploy a People Counter App at the Edge project.
 
-## Intel® Edge AI for IoT Developers Nanodegree Program by Udacity.
+### Intel® Edge AI for IoT Developers Nanodegree Program by Udacity.
 
-### What it Does:
+## What it Does:
 The app detects people in a designated area, providing the number of people in the frame, 
 average duration of people in frame and total count, using **Intel®** hardware and software tools.
 
@@ -31,7 +31,7 @@ Please find sample **results** of App performance **on videos**:
 **The counter uses the Inference Engine included in the Intel® Distribution of OpenVINO™ Toolkit.**
 
 
-### Usage: 
+## Usage: 
 
 Run inference on an input live stream, video or single image. 
 
