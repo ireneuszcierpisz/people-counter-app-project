@@ -4,9 +4,10 @@
 
 According to OpenVINO Toolkit >> Custom Layer Extensions for the Inference Engine:
 "Each device plugin includes a library of optimized implementations to execute known layer operations which must be extended to execute a custom layer. 
-The custom layer extension is implemented according to the target device:
+The custom layer extension is implemented according to the target device."
 
-Custom Layer CPU Extension - is a compiled shared library (.so or .dll binary) needed by the CPU Plugin for executing the custom layer on the CPU."
+"Custom Layer CPU Extension - is a compiled shared library (.so or .dll binary) needed by the CPU Plugin for executing the custom layer on the CPU."
+
 "Layer — The abstract concept of a math function that is selected for a specific purpose (relu, sigmoid, tanh, convolutional)." 
 
 I use in my app the AddExtension method to load the extensions when for models featuring layers from Custom Layer CPU Extension library.
@@ -24,11 +25,11 @@ Lighting, model accuracy, and camera focal length/image size have different effe
 deployed edge model.
 
 ## Comparing Model Performance
-I've used Udacity workspace and OpenVINO environment and my app uses Intel IE so for start inference it needs model IR. Below I compare few models after conversion to IR.
+I've used Udacity workspace and OpenVINO environment and my app uses Intel IE so for start inference it needed model IR. Below I compare few models after conversion to IR.
 
 ## Model Research
 
-In investigating potential people counter models, I tried each of the following three models:
+In investigating potential people counter models, I've tried each of the following three models:
 
 - Model 1: [ONNX MODEL tiny-yolov2]
   - [Model Source: https://github.com/onnx/models/tree/master/vision/object_detection_segmentation/tiny-yolov2/model]
