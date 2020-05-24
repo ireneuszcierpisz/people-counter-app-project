@@ -31,7 +31,7 @@ Please find sample **results** of App performance **on videos**:
 **The counter uses the Inference Engine included in the Intel® Distribution of OpenVINO™ Toolkit.**
 
 
-**Usage**: 
+### Usage: 
 
 Run inference on an input live stream, video or single image. 
 
