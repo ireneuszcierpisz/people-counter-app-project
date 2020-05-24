@@ -21,7 +21,11 @@ Please find sample **results** of App performance **on videos**:
    
       - **Cascade** two models from Intel OpenVINO Open Model Zoo: 
       
-      **person-detection-retail-0013** outputs bounding boxes and **human-pose-estimation-0001** outputs keypoint heatmaps, used simultaneously for counting and tracking people in video. The [video](https://youtu.be/jvBkiwHOY_g) shows the performance of both models.
+          **person-detection-retail-0013** outputs bounding boxes and **human-pose-estimation-0001** outputs keypoint heatmaps,   
+          
+          used simultaneously for counting and tracking people in video. 
+          
+          The [video](https://youtu.be/jvBkiwHOY_g) shows the performance of both models.
                       
            
 **The counter uses the Inference Engine included in the Intel® Distribution of OpenVINO™ Toolkit.**
