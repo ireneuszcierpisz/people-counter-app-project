@@ -8,23 +8,29 @@ average duration of people in frame and total count, using **Intel®** hardware 
 
 Please find sample results of App performance on the:
 
-      1. single image <a href="https://github.com/ireneuszcierpisz/people-counter-app-project/blob/master/images/4show-I_pd-pe_orig.jpg">here</a>
+   1. single image <a href="https://github.com/ireneuszcierpisz/people-counter-app-project/blob/master/images/4show-I_pd-pe_orig.jpg">here</a>
       
-      2. very short video with two persons
-            a) Simultaneous performance of **tf model ssd_mobilenet_v2_coco** and **pose_estimation model** 
-               from Intel Model Zoo [here]https://youtu.be/dMz_8uvoTAA
-            b) Cascade two models(outputs b.boxes and heatmap) from Intel OpenVino Model Zoo [here]https://youtu.be/eNtujBDE--0
+   2. very short video with two persons
+   
+      a) Simultaneous performance of **tf model ssd_mobilenet_v2_coco** and **pose_estimation model** 
+         from Intel Model Zoo [here](https://youtu.be/dMz_8uvoTAA)
+         
+      b) **Cascade** two models(outputs b.boxes and heatmap) from Intel OpenVino Model Zoo [here](https://youtu.be/eNtujBDE--0)
                   
-      3. original Udacity video
-            Two models from Intel OpenVINO Open Model Zoo: person-detection-retail-0013 outputs bounding boxes 
-            and human-pose-estimation-0001 outputs keypoint heatmaps, used simultaneously 
-            for counting and tracking people in video. The [video]https://youtu.be/jvBkiwHOY_g shows the performance of both models 
+   3. original Udacity video
+            Two models from Intel OpenVINO Open Model Zoo: **person-detection-retail-0013** outputs bounding boxes            
+            and **human-pose-estimation-0001** outputs keypoint heatmaps, used simultaneously 
+            for counting and tracking people in video. The [video](https://youtu.be/jvBkiwHOY_g shows the performance of both models)
                       
            
 **The counter uses the Inference Engine included in the Intel® Distribution of OpenVINO™ Toolkit.**
 
 
-**Usage**: Run inference on an input live stream or video 
+**Usage**: 
+
+Run inference on an input live stream, video or single image. 
+
+Use the **-mf** argument to choose a model or **to cascade two models** at the same time
 
       [-h] [-mbb MBB]
       [-ms MS] [-mf MF]
@@ -37,7 +43,7 @@ Please find sample results of App performance on the:
   
     -mbb MBB              The location of the bb model XML file
     -ms MS                The location of the semantic model XML file
-    -mf MF                Model flag 'B' for Bounding Boxes (output shape
+    -mf MF                Model flag 'B' for Bounding Boxes model (output shape
                           [1x1xNx7]) , 'P' for Pose Estimation (output blob
                           shape [1x19x32x57]), 'BP' for cascade both models
 
