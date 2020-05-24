@@ -5,11 +5,12 @@
 According to OpenVINO Toolkit >> Custom Layer Extensions for the Inference Engine:
 "Each device plugin includes a library of optimized implementations to execute known layer operations which must be extended to execute a custom layer. 
 The custom layer extension is implemented according to the target device:
+
 Custom Layer CPU Extension - is a compiled shared library (.so or .dll binary) needed by the CPU Plugin for executing the custom layer on the CPU."
 "Layer — The abstract concept of a math function that is selected for a specific purpose (relu, sigmoid, tanh, convolutional)." 
 
-I use in my app the AddExtension method to load the extensions when for models featuring layers from this library.
-I use check_layers.py to see the layers that are supported by device plugin for the Inference Engine.
+I use in my app the AddExtension method to load the extensions when for models featuring layers from Custom Layer CPU Extension library.
+I use my check_layers.py to see the layers that are supported by device plugin for the Inference Engine.
 
 ## Assess Model Use Cases
 
