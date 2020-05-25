@@ -195,7 +195,11 @@ def load_poseTracker(count, tracker_p, frame_copy, height, width, ft, persons_p,
     pdt = [(p, (t[-1] - t[0])) for p, t in tracker_p[f].items()]
     for e in pdt:
         PDT_p[e[0]] = e[1]
-        
+                        
+        # notification when the app detects than person is on camera longer than a given length of time.
+        if (12 <= e[1]/1000 < (12 + 0.1)):
+            print("! {} is longer than 12sec !".format(e[0]))
+                    
     # computes and writes average duration time for all persons who have been detected
     duration = 0
     if len(PDT_p) > 0:
